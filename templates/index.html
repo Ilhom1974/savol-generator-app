@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savol Generator v2.1 (HEMIS)</title>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #1a73e8;
+        }
+        p {
+            font-size: 16px;
+            color: #5f6368;
+        }
+        textarea {
+            width: 98%;
+            height: 200px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+        
+        .controls-container {
+            display: grid; /* Grid usulidan foydalanamiz */
+            grid-template-columns: 1fr 1fr; /* 2 ustun */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .control-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #3c4043;
+            margin-bottom: 8px;
+        }
+        .control-group select,
+        .control-group input,
+        .control-group input[type="file"] {
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .control-group input[type="file"] {
+            padding: 7px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background-color: #1a73e8;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #185abc;
+        }
+        button:disabled {
+            background-color: #9ecbff;
+            cursor: not-allowed;
+        }
+        
+        .secondary-btn {
+            background-color: #ffffff;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+            font-size: 15px;
+            font-weight: 600;
+            width: auto;
+            padding: 10px 16px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .secondary-btn:hover {
+            background-color: #f1f8ff;
+        }
+
+        #results-container {
+            margin-top: 30px;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #loading {
+            text-align: center;
+            font-size: 16px;
+            color: #5f6368;
+            display: none;
+        }
+        #results {
+            background-color: #f1f3f4;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 15px;
+            white-space: pre-wrap; 
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>O'quv materiallari asosida savollar generatsiyasi</h2>
+        <p>Ma'ruza matnini quyidagi maydonga joylashtiring YOKI fayl yuklang, so'ngra sozlamalarni tanlab "Yaratish" tugmasini bosing.</p>
+
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="fileInput">Fayl yuklash (.txt, .docx):</label>
+                <input type="file" id="fileInput" accept=".txt,.docx">
+            </div>
+            
+            <div class="control-group">
+                <label for="q_count">Savollar soni (taxminan):</label>
+                <input type="number" id="q_count" value="5" min="2" max="20">
+            </div>
+            
+            <div class="control-group">
+                <label for="q_type">Savol turi:</label>
+                <select id="q_type">
+                    <option value="hammasi">Nazariy va Test</option>
+                    <option value="faqat_nazariy">Faqat Nazariy</option>
+                    <option value="faqat_test">Faqat Test</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="q_difficulty">Murakkablik:</label>
+                <select id="q_difficulty">
+                    <option value="o'rta">O'rta (Standart)</option>
+                    <option value="oson">Oson</option>
+                    <option value="qiyin">Qiyin (Murakkab)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="test_format">Test formati (agar test yaratilsa):</label>
+                <select id="test_format">
+                    <option value="oddiy">Oddiy format (a, b, c, d)</option>
+                    <option value="hemis">HEMIS formati (#, ====, ++++)</option>
+                </select>
+            </div>
+            </div>
+        <p style="margin-top: 15px;">Yoki matnni qo'lda kiriting:</p>
+        <textarea id="lectureText" placeholder="Agar fayl tanlanmagan bo'lsa, shu yerdagi matn ishlatiladi..."></textarea>
+        
+        <button id="generateBtn">Yaratish</button>
+
+        <div id="results-container">
+            <div class="results-header">
+                <h3>Natijalar:</h3>
+                <button id="downloadBtn" class="secondary-btn" style="display:none;">
+                    Natijani (.txt) yuklab olish
+                </button>
+            </div>
+            <div id="loading">
+                <p>Generatsiya qilinmoqda... Bu biroz vaqt olishi mumkin.</p>
+            </div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elementlari
+        const generateBtn = document.getElementById('generateBtn');
+        const lectureText = document.getElementById('lectureText');
+        const resultsDiv = document.getElementById('results');
+        const loadingDiv = document.getElementById('loading');
+        const downloadBtn = document.getElementById('downloadBtn');
+        
+        // Sozlamalar
+        const qTypeSelect = document.getElementById('q_type');
+        const qDifficultySelect = document.getElementById('q_difficulty');
+        const qCountInput = document.getElementById('q_count');
+        const fileInput = document.getElementById('fileInput');
+        
+        // YANGI SOZLAMA ELEMENTI
+        const testFormatSelect = document.getElementById('test_format');
+
+        generateBtn.addEventListener('click', async () => {
+            
+            const selectedFile = fileInput.files[0];
+            const textContent = lectureText.value;
+
+            if (!selectedFile && textContent.trim() === "") {
+                resultsDiv.innerText = "Iltimos, avval fayl yuklang YOKI matn kiriting.";
+                return;
+            }
+
+            const formData = new FormData();
+            
+            // Barcha sozlamalarni qo'shamiz
+            formData.append('q_type', qTypeSelect.value);
+            formData.append('q_difficulty', qDifficultySelect.value);
+            formData.append('q_count', qCountInput.value);
+            formData.append('test_format', testFormatSelect.value); // YANGI QO'SHILDI
+            
+            if (selectedFile) {
+                formData.append('file', selectedFile);
+            } else {
+                formData.append('text', textContent);
+            }
+
+            resultsDiv.innerText = "";
+            resultsDiv.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    body: formData, 
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultsDiv.innerText = data.questions; 
+                    downloadBtn.style.display = 'block';
+                } else {
+                    resultsDiv.innerText = `Serverda xatolik yuz berdi: ${data.error}`;
+                }
+
+            } catch (error)
+            {
+                resultsDiv.innerText = `Server bilan bog'lanishda kutilmagan xatolik: ${error}. Server ishlayotganiga ishonch hosil qiling.`;
+            } finally {
+                loadingDiv.style.display = 'none';
+                resultsDiv.style.display = 'block';
+                generateBtn.disabled = false;
+            }
+        });
+
+        // Download tugmasi (o'zgarishsiz)
+        downloadBtn.addEventListener('click', () => {
+            const textToSave = resultsDiv.innerText;
+            if (!textToSave) return;
+            const blob = new Blob([textToSave], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'savollar.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        });
+    </script>
+</body>
+</html>
