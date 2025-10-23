@@ -105,31 +105,33 @@ def api_generate():
         if q_type != 'faqat_nazariy':
             if test_format == 'hemis':
                 test_format_instruction = """
-        TEST SAVOLLARI UCHUN FORMAT: Test savollari uchun *faqat* va *aniq* quyidagi maxsus HEMIS formatidan foydalaning:
-        [Savol matni 1]
+        TEST SAVOLLARI UCHUN FORMAT: Test savollari uchun *faqat* va *aniq* quyidagi maxsus HEMIS formatidan foydalaning (variantlar atrofida [ ] belgilari BO'LMASIN):
+        
+        Savol matni 1
         ====
-        [Variant A]
+        Variant A
         ====
-        #[To'g'ri javob varianti]
+        #To'g'ri javob varianti
         ====
-        [Variant C]
+        Variant C
         ====
-        [Variant D]
+        Variant D
         ++++
-        [Savol matni 2]
+        Savol matni 2
         ====
-        [Variant A]
+        Variant A
         ====
-        [Variant B]
+        Variant B
         ====
-        #[To'g'ri javob varianti]
+        #To'g'ri javob varianti
         ... va hokazo.
         
         QOIDALAR (JUDA MUHIM!):
-        1. Har bir savol, javob va bo'luvchi '====' o'z alohida qatorida bo'lsin.
-        2. To'g'ri javob variantidan oldin *faqat* '#' belgisini qo'ying (boshqa belgi yo'q).
+        1. Savol matni, har bir variant va '====' bo'luvchisi o'z alohida qatorida bo'lsin.
+        2. To'g'ri javob variantidan oldin *faqat* '#' belgisini qo'ying (boshqa belgi yo'q, probel yo'q).
         3. Har bir savol bloki orasini *faqat* '++++' belgisi bilan ajrating.
         4. Boshqa hech qanday raqamlash (1., 2.) yoki harf belgilash (a), b)) ISHLATMANG.
+        5. Variantlar yoki savol matni atrofida QAVS ([ ]) ISHLATMANG.
         """
             else: # 'oddiy' format
                 test_format_instruction = "TEST SAVOLLARI UCHUN FORMAT: Test savollarini standart (a, b, c, d) variantlari bilan yarating."
