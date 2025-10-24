@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savol Generator v2.1 (HEMIS)</title>
-    
+    <title>Savol Generator v1.0</title>
+
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -38,11 +38,22 @@
             font-size: 15px;
             line-height: 1.5;
             margin-top: 10px;
+            transition: opacity 0.3s ease-in-out; /* Yashirish/ko'rsatish animatsiyasi */
         }
-        
+        /* Yashirin elementlar uchun stil */
+        .hidden {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            margin-top: 0 !important; /* Muhim! */
+            padding-top: 0;
+            padding-bottom: 0;
+            border: none;
+        }
+
         .controls-container {
-            display: grid; /* Grid usulidan foydalanamiz */
-            grid-template-columns: 1fr 1fr; /* 2 ustun */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-top: 20px;
         }
@@ -67,6 +78,27 @@
         .control-group input[type="file"] {
             padding: 7px;
         }
+        /* Fayl yuklash maydoni yonidagi tugma uchun */
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .clear-file-btn {
+            padding: 6px 12px; /* O'lchamni biroz kattalashtirdik */
+            font-size: 13px; /* Shriftni biroz kattalashtirdik */
+            font-weight: 500; /* Shriftni biroz qalinlashtirdik */
+            color: #d93025; /* Qizg'ish rang (o'chirish belgisi sifatida) */
+            background-color: #ffffff; /* Oq fon */
+            border: 1px solid #d93025; /* Qizg'ish chegara */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s; /* Hover effekti uchun */
+        }
+        .clear-file-btn:hover {
+            background-color: #fce8e6; /* Hoverda och qizil fon */
+            color: #a50e0e; /* Hoverda to'qroq qizil matn */
+        }
 
         button {
             display: block;
@@ -89,7 +121,7 @@
             background-color: #9ecbff;
             cursor: not-allowed;
         }
-        
+
         .secondary-btn {
             background-color: #ffffff;
             color: #1a73e8;
@@ -112,6 +144,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* Kichik ekranlar uchun */
+        }
+        /* Vaqt ko'rsatuvchi uchun stil */
+        .generation-time {
+            font-size: 14px;
+            color: #5f6368;
+            margin-left: 10px;
+            white-space: nowrap; /* Bitta qatorda turishi uchun */
         }
         #loading {
             text-align: center;
@@ -125,9 +165,36 @@
             border-radius: 8px;
             padding: 16px;
             margin-top: 15px;
-            white-space: pre-wrap; 
+            white-space: pre-wrap;
             line-height: 1.6;
         }
+/* --- YANGI FOOTER UCHUN STIL --- */
+        body {
+            /* Mavjud body stillariga qo'shimcha: */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            /* Mavjud .container stillariga qo'shimcha: */
+            flex-grow: 1; /* Konteyner bo'sh joyni egallashi uchun */
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px; /* Konteynerdan keyingi bo'sh joy */
+            font-size: 13px;
+            color: #5f6368;
+            border-top: 1px solid #e0e0e0; /* Yuqoridagi chiziq */
+        }
+        footer a { /* Havolalar uchun stil (agar ishlatsangiz) */
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* ------------------------------- */
     </style>
 </head>
 <body>
@@ -139,14 +206,17 @@
         <div class="controls-container">
             <div class="control-group">
                 <label for="fileInput">Fayl yuklash (.txt, .docx):</label>
-                <input type="file" id="fileInput" accept=".txt,.docx">
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" accept=".txt,.docx" style="flex-grow: 1;">
+                    <button id="clearFileBtn" class="clear-file-btn" style="display: none;">Tozalash</button>
+                </div>
             </div>
-            
+
             <div class="control-group">
                 <label for="q_count">Savollar soni (taxminan):</label>
                 <input type="number" id="q_count" value="5" min="2" max="20">
             </div>
-            
+
             <div class="control-group">
                 <label for="q_type">Savol turi:</label>
                 <select id="q_type">
@@ -155,7 +225,7 @@
                     <option value="faqat_test">Faqat Test</option>
                 </select>
             </div>
-            
+
             <div class="control-group">
                 <label for="q_difficulty">Murakkablik:</label>
                 <select id="q_difficulty">
@@ -172,15 +242,17 @@
                     <option value="hemis">HEMIS formati (#, ====, ++++)</option>
                 </select>
             </div>
-            </div>
-        <p style="margin-top: 15px;">Yoki matnni qo'lda kiriting:</p>
+        </div>
+
+        <p id="manualInputLabel" style="margin-top: 15px;">Yoki matnni qo'lda kiriting:</p>
         <textarea id="lectureText" placeholder="Agar fayl tanlanmagan bo'lsa, shu yerdagi matn ishlatiladi..."></textarea>
-        
+
         <button id="generateBtn">Yaratish</button>
 
         <div id="results-container">
             <div class="results-header">
-                <h3>Natijalar:</h3>
+                <div> <h3>Natijalar:</h3>
+                    <span id="generationTime" class="generation-time"></span> </div>
                 <button id="downloadBtn" class="secondary-btn" style="display:none;">
                     Natijani (.txt) yuklab olish
                 </button>
@@ -196,21 +268,25 @@
         // DOM elementlari
         const generateBtn = document.getElementById('generateBtn');
         const lectureText = document.getElementById('lectureText');
+        const manualInputLabel = document.getElementById('manualInputLabel'); // Matn labeli
         const resultsDiv = document.getElementById('results');
         const loadingDiv = document.getElementById('loading');
         const downloadBtn = document.getElementById('downloadBtn');
-        
+        const generationTimeSpan = document.getElementById('generationTime'); // Vaqt uchun span
+
         // Sozlamalar
         const qTypeSelect = document.getElementById('q_type');
         const qDifficultySelect = document.getElementById('q_difficulty');
         const qCountInput = document.getElementById('q_count');
         const fileInput = document.getElementById('fileInput');
-        
-        // YANGI SOZLAMA ELEMENTI
+        const clearFileBtn = document.getElementById('clearFileBtn'); // Faylni tozalash tugmasi
         const testFormatSelect = document.getElementById('test_format');
 
+        // --- 1. VAQTNI O'LCHASH VA GENERATSIYA ---
         generateBtn.addEventListener('click', async () => {
-            
+            const startTime = performance.now(); // Vaqtni boshlash
+            generationTimeSpan.textContent = ''; // Oldingi vaqtni tozalash
+
             const selectedFile = fileInput.files[0];
             const textContent = lectureText.value;
 
@@ -220,13 +296,11 @@
             }
 
             const formData = new FormData();
-            
-            // Barcha sozlamalarni qo'shamiz
             formData.append('q_type', qTypeSelect.value);
             formData.append('q_difficulty', qDifficultySelect.value);
             formData.append('q_count', qCountInput.value);
-            formData.append('test_format', testFormatSelect.value); // YANGI QO'SHILDI
-            
+            formData.append('test_format', testFormatSelect.value);
+
             if (selectedFile) {
                 formData.append('file', selectedFile);
             } else {
@@ -242,41 +316,106 @@
             try {
                 const response = await fetch('/api/generate', {
                     method: 'POST',
-                    body: formData, 
+                    body: formData,
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    resultsDiv.innerText = data.questions; 
+                    resultsDiv.innerText = data.questions;
                     downloadBtn.style.display = 'block';
                 } else {
                     resultsDiv.innerText = `Serverda xatolik yuz berdi: ${data.error}`;
                 }
 
-            } catch (error)
-            {
+            } catch (error) {
                 resultsDiv.innerText = `Server bilan bog'lanishda kutilmagan xatolik: ${error}. Server ishlayotganiga ishonch hosil qiling.`;
             } finally {
+                const endTime = performance.now(); // Vaqtni to'xtatish
+                const timeTaken = ((endTime - startTime) / 1000).toFixed(2); // Sekundga o'tkazish
+                generationTimeSpan.textContent = `(${timeTaken} soniya)`; // Vaqtni ko'rsatish
+
                 loadingDiv.style.display = 'none';
                 resultsDiv.style.display = 'block';
                 generateBtn.disabled = false;
             }
         });
 
-        // Download tugmasi (o'zgarishsiz)
+        // --- 2. SHARTLI INTERFEYS ELEMENTLARI ---
+
+        // Fayl tanlanganda matn maydonini yashirish
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                lectureText.classList.add('hidden'); // Matn maydonini yashirish
+                manualInputLabel.classList.add('hidden'); // Labelni yashirish
+                clearFileBtn.style.display = 'inline-block'; // Tozalash tugmasini ko'rsatish
+            } else {
+                lectureText.classList.remove('hidden'); // Matn maydonini ko'rsatish
+                manualInputLabel.classList.remove('hidden'); // Labelni ko'rsatish
+                clearFileBtn.style.display = 'none'; // Tozalash tugmasini yashirish
+            }
+        });
+
+        // Faylni tozalash tugmasi bosilganda
+        clearFileBtn.addEventListener('click', () => {
+            fileInput.value = null; // Fayl tanlovini tozalash
+            // Yuqoridagi 'change' hodisasi avtomatik ishga tushadi va UI ni to'g'irlaydi
+            const changeEvent = new Event('change');
+            fileInput.dispatchEvent(changeEvent);
+        });
+
+        // Savol turi o'zgarganda Test formatini yoqish/o'chirish
+        qTypeSelect.addEventListener('change', () => {
+            if (qTypeSelect.value === 'faqat_nazariy') {
+                testFormatSelect.disabled = true; // O'chirish
+            } else {
+                testFormatSelect.disabled = false; // Yoqish
+            }
+        });
+
+        // Sahifa yuklanganda Test formatining boshlang'ich holatini o'rnatish
+        document.addEventListener('DOMContentLoaded', () => {
+             if (qTypeSelect.value === 'faqat_nazariy') {
+                testFormatSelect.disabled = true;
+            }
+        });
+
+
+        // --- 3. YUKLAB OLISH (FAYL NOMINI SO'RASH BILAN) ---
         downloadBtn.addEventListener('click', () => {
             const textToSave = resultsDiv.innerText;
             if (!textToSave) return;
+
+            // Foydalanuvchidan fayl nomini so'rash
+            let suggestedName = "savollar.txt"; // Boshlang'ich taklif
+            // Agar fayl yuklangan bo'lsa, o'sha fayl nomidan foydalanish (ixtiyoriy)
+            if (fileInput.files.length > 0) {
+                 const originalFileName = fileInput.files[0].name;
+                 // Fayl kengaytmasini olib tashlab, "_savollar.txt" qo'shish
+                 suggestedName = originalFileName.substring(0, originalFileName.lastIndexOf('.')) + "_savollar.txt";
+            }
+
+            const fileName = prompt("Fayl nomini kiriting:", suggestedName);
+
+            // Agar foydalanuvchi "Cancel" bossa yoki nom kiritmasa
+            if (fileName === null || fileName.trim() === "") {
+                console.log("Yuklab olish bekor qilindi.");
+                return;
+            }
+
             const blob = new Blob([textToSave], { type: 'text/plain;charset=utf-8' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = 'savollar.txt';
+            a.download = fileName.endsWith('.txt') ? fileName : fileName + '.txt'; // .txt kengaytmasini ta'minlash
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(a.href);
         });
     </script>
+    <footer>
+        © 2025, Boynazarov Ilhom Maxmudovich / TATU Samarqand filiali. Barcha huquqlar himoyalangan.<br>
+        Ushbu vosita <a href="https://gemini.google.com/" target="_blank">Google Gemini</a> yordamida yaratildi.
+    </footer>
 </body>
 </html>
