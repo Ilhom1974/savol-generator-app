@@ -183,7 +183,9 @@ def api_generate():
         4. {test_format_instruction}
         
         Barcha savollar faqat va faqat yuqorida berilgan matn mazmuniga asoslansin.
-        Javobni quyidagi formatda qaytaring (agar sarlavha ko'rsatilgan bo'lsa, unga rioya qiling, agar HEMIS formati so'ralgan bo'lsa, faqat o'sha formatni qaytaring):
+        
+        **YANGI QO'SHILGAN CHEKLOV:**
+        **SAVOLLARNI TUZISHDA HECH QACHON "manbaga ko'ra", "matnda aytilishicha", "keltirilgan matnga asoslanib" kabi manbaga to'g'ridan-to'g'ri ishora qiluvchi iboralarni ISHLATMANG. Savollar mustaqil, manbani o'qimasdan ham tushunarli bo'lsin.** Javobni quyidagi formatda qaytaring (agar sarlavha ko'rsatilgan bo'lsa, unga rioya qiling, agar HEMIS formati so'ralgan bo'lsa, faqat o'sha formatni qaytaring):
         {format_instruction}
         """
         # -------------------------------
