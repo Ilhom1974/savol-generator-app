@@ -1,0 +1,95 @@
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0; padding: 20px; background-color: #f7f9fc; color: #333;
+            min-height: 100vh; display: flex; flex-direction: column;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; padding: 20px; background-color: #ffffff;
+            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            flex-grow: 1;
+        }
+        h2 { text-align: center; color: #1a73e8; }
+        p { font-size: 16px; color: #5f6368; }
+        textarea {
+            width: 98%; height: 200px; padding: 12px; border-radius: 8px;
+            border: 1px solid #ddd; font-size: 15px; line-height: 1.5;
+            margin-top: 10px; transition: opacity 0.3s ease-in-out;
+        }
+        .hidden {
+            opacity: 0; height: 0; overflow: hidden; margin-top: 0 !important;
+            padding: 0 !important; border: none !important; /* Yashirishni kuchaytirish */
+        }
+
+        .controls-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 ustun */
+            gap: 20px; /* Ustunlar va qatorlar orasidagi masofa */
+            margin-top: 20px;
+            /* align-items: end; olib tashlandi */
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Label va input orasidagi masofa */
+        }
+        .control-group label {
+            font-size: 14px; font-weight: 600; color: #3c4043;
+             /* margin-bottom olib tashlandi, gap ishlatiladi */
+        }
+        .control-group select, .control-group input, .control-group input[type="file"] {
+            padding: 10px; font-size: 15px; border: 1px solid #ddd; border-radius: 8px;
+            width: 100%; box-sizing: border-box;
+        }
+        .control-group input[type="file"] { padding: 7px; }
+
+        /* --- TOZALASH TUGMASI STILI VA JOYLAShUVI --- */
+        .clear-file-btn {
+            padding: 5px 10px; /* Kichikroq qildik */
+            font-size: 12px;
+            font-weight: 500;
+            color: #d93025;
+            background-color: #fce8e6; /* Och qizil fon */
+            border: 1px solid #f4c7c3; /* Och qizil chegara */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            /* margin-top olib tashlandi, gap orqali boshqariladi */
+            width: auto;
+            align-self: flex-start; /* Chapga tekislash */
+        }
+        .clear-file-btn:hover {
+             background-color: #f8d7da; /* To'qroq och qizil fon */
+             border-color: #f5c6cb;
+        }
+        /* -------------------------------------- */
+
+        button#generateBtn {
+             display: block; width: 100%; padding: 14px; font-size: 18px; font-weight: 600;
+            color: #fff; background-color: #1a73e8; border: none; border-radius: 8px;
+            cursor: pointer; margin-top: 25px; /* Sozlamalardan keyingi bo'sh joy */
+             transition: background-color 0.3s;
+        }
+        button#generateBtn:hover { background-color: #185abc; }
+        button#generateBtn:disabled { background-color: #9ecbff; cursor: not-allowed; }
+
+        .secondary-btn { /* ID ni olib tashladik, chunki faqat bitta */
+            background-color: #ffffff; color: #1a73e8; border: 1px solid #1a73e8;
+            font-size: 15px; font-weight: 600; width: auto; padding: 10px 16px;
+            margin-top: 0; margin-bottom: 15px; cursor: pointer;
+        }
+        .secondary-btn:hover { background-color: #f1f8ff; }
+
+        #results-container { margin-top: 30px; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .generation-time { font-size: 14px; color: #5f6368; white-space: nowrap; }
+        #loading { text-align: center; font-size: 16px; color: #5f6368; display: none; margin-top: 15px;}
+        #results {
+            background-color: #f1f3f4; border: 1px solid #e0e0e0; border-radius: 8px;
+            padding: 16px; margin-top: 15px; white-space: pre-wrap; line-height: 1.6;
+        }
+        footer {
+            text-align: center; padding: 15px 0; margin-top: 30px; font-size: 13px;
+            color: #5f6368; border-top: 1px solid #e0e0e0;
+        }
+        footer a { color: #1a73e8; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
