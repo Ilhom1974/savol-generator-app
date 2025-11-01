@@ -3,106 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savol Generator v1.1 (Ko'p tilli - Tuzatilgan)</title>
+    <title>Savol Generator v2.0</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H8M3WB9TEF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; padding: 20px; background-color: #f7f9fc; color: #333;
-            min-height: 100vh; display: flex; flex-direction: column;
-        }
-        .container {
-            max-width: 900px; margin: 0 auto; padding: 20px; background-color: #ffffff;
-            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            flex-grow: 1;
-        }
-        h2 { text-align: center; color: #1a73e8; }
-        p { font-size: 16px; color: #5f6368; }
-        textarea {
-            width: 98%; height: 200px; padding: 12px; border-radius: 8px;
-            border: 1px solid #ddd; font-size: 15px; line-height: 1.5;
-            margin-top: 10px; transition: opacity 0.3s ease-in-out;
-        }
-        .hidden {
-            opacity: 0; height: 0; overflow: hidden; margin-top: 0 !important;
-            padding: 0 !important; border: none !important; /* Yashirishni kuchaytirish */
-        }
-
-        .controls-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr; /* 3 ustun */
-            gap: 20px; /* Ustunlar va qatorlar orasidagi masofa */
-            margin-top: 20px;
-            /* align-items: end; olib tashlandi */
-        }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px; /* Label va input orasidagi masofa */
-        }
-        .control-group label {
-            font-size: 14px; font-weight: 600; color: #3c4043;
-             /* margin-bottom olib tashlandi, gap ishlatiladi */
-        }
-        .control-group select, .control-group input, .control-group input[type="file"] {
-            padding: 10px; font-size: 15px; border: 1px solid #ddd; border-radius: 8px;
-            width: 100%; box-sizing: border-box;
-        }
-        .control-group input[type="file"] { padding: 7px; }
-
-        /* --- TOZALASH TUGMASI STILI VA JOYLAShUVI --- */
-        .clear-file-btn {
-            padding: 5px 10px; /* Kichikroq qildik */
-            font-size: 12px;
-            font-weight: 500;
-            color: #d93025;
-            background-color: #fce8e6; /* Och qizil fon */
-            border: 1px solid #f4c7c3; /* Och qizil chegara */
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
-            /* margin-top olib tashlandi, gap orqali boshqariladi */
-            width: auto;
-            align-self: flex-start; /* Chapga tekislash */
-        }
-        .clear-file-btn:hover {
-             background-color: #f8d7da; /* To'qroq och qizil fon */
-             border-color: #f5c6cb;
-        }
-        /* -------------------------------------- */
-
-        button#generateBtn {
-             display: block; width: 100%; padding: 14px; font-size: 18px; font-weight: 600;
-            color: #fff; background-color: #1a73e8; border: none; border-radius: 8px;
-            cursor: pointer; margin-top: 25px; /* Sozlamalardan keyingi bo'sh joy */
-             transition: background-color 0.3s;
-        }
-        button#generateBtn:hover { background-color: #185abc; }
-        button#generateBtn:disabled { background-color: #9ecbff; cursor: not-allowed; }
-
-        .secondary-btn { /* ID ni olib tashladik, chunki faqat bitta */
-            background-color: #ffffff; color: #1a73e8; border: 1px solid #1a73e8;
-            font-size: 15px; font-weight: 600; width: auto; padding: 10px 16px;
-            margin-top: 0; margin-bottom: 15px; cursor: pointer;
-        }
-        .secondary-btn:hover { background-color: #f1f8ff; }
-
-        #results-container { margin-top: 30px; }
-        .results-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
-        .generation-time { font-size: 14px; color: #5f6368; white-space: nowrap; }
-        #loading { text-align: center; font-size: 16px; color: #5f6368; display: none; margin-top: 15px;}
-        #results {
-            background-color: #f1f3f4; border: 1px solid #e0e0e0; border-radius: 8px;
-            padding: 16px; margin-top: 15px; white-space: pre-wrap; line-height: 1.6;
-        }
-        footer {
-            text-align: center; padding: 15px 0; margin-top: 30px; font-size: 13px;
-            color: #5f6368; border-top: 1px solid #e0e0e0;
-        }
-        footer a { color: #1a73e8; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-    </style>
+      gtag('config', 'G-H8M3WB9TEF');
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
     <div class="container">
@@ -111,8 +24,8 @@
 
         <div class="controls-container">
             <div class="control-group">
-                <label for="fileInput">Fayl yuklash (.txt, .docx):</label>
-                <input type="file" id="fileInput" accept=".txt,.docx">
+                <label for="fileInput">Fayl yuklash (.txt, .docx, .pdf, .pptx):</label>
+                <input type="file" id="fileInput" accept=".txt,.docx, .pdf, .pptx">
                 <button id="clearFileBtn" class="clear-file-btn" style="display: none;">Tozalash</button>
             </div>
 
@@ -182,122 +95,6 @@
         Ushbu vosita <a href="https://gemini.google.com/" target="_blank">Google Gemini</a> yordamida yaratildi.
     </footer>
 
-    <script>
-        // DOM elementlari
-        const generateBtn = document.getElementById('generateBtn');
-        const lectureText = document.getElementById('lectureText');
-        const manualInputLabel = document.getElementById('manualInputLabel');
-        const resultsDiv = document.getElementById('results');
-        const loadingDiv = document.getElementById('loading');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const generationTimeSpan = document.getElementById('generationTime');
-
-        // Sozlamalar
-        const qTypeSelect = document.getElementById('q_type');
-        const qDifficultySelect = document.getElementById('q_difficulty');
-        const qCountInput = document.getElementById('q_count');
-        const fileInput = document.getElementById('fileInput');
-        const clearFileBtn = document.getElementById('clearFileBtn');
-        const testFormatSelect = document.getElementById('test_format');
-        const outputLanguageSelect = document.getElementById('output_language');
-
-        // Vaqtni o'lchash va generatsiya
-        generateBtn.addEventListener('click', async () => {
-            const startTime = performance.now();
-            generationTimeSpan.textContent = '';
-
-            const selectedFile = fileInput.files[0];
-            const textContent = lectureText.value;
-            const selectedLanguage = outputLanguageSelect.value;
-
-            if (!selectedFile && textContent.trim() === "") {
-                resultsDiv.innerText = "Iltimos, avval fayl yuklang YOKI matn kiriting.";
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('q_type', qTypeSelect.value);
-            formData.append('q_difficulty', qDifficultySelect.value);
-            formData.append('q_count', qCountInput.value);
-            formData.append('test_format', testFormatSelect.value);
-            formData.append('output_language', selectedLanguage);
-
-            if (selectedFile) {
-                formData.append('file', selectedFile);
-            } else {
-                formData.append('text', textContent);
-            }
-
-            resultsDiv.innerText = "";
-            resultsDiv.style.display = 'none';
-            downloadBtn.style.display = 'none';
-            loadingDiv.style.display = 'block';
-            generateBtn.disabled = true;
-
-            try {
-                const response = await fetch('/api/generate', {
-                    method: 'POST',
-                    body: formData,
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    resultsDiv.innerText = data.questions;
-                    downloadBtn.style.display = 'block';
-                } else {
-                    resultsDiv.innerText = `Serverda xatolik yuz berdi: ${data.error}`;
-                }
-            } catch (error) {
-                resultsDiv.innerText = `Server bilan bog'lanishda kutilmagan xatolik: ${error}. Server ishlayotganiga ishonch hosil qiling.`;
-            } finally {
-                const endTime = performance.now();
-                const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-                generationTimeSpan.textContent = `(${timeTaken} soniya)`;
-                loadingDiv.style.display = 'none';
-                resultsDiv.style.display = 'block';
-                generateBtn.disabled = false;
-            }
-        });
-
-        // Fayl tanlanganda/tozalanganda UI o'zgarishlari
-        fileInput.addEventListener('change', () => {
-            const hasFile = fileInput.files.length > 0;
-            lectureText.classList.toggle('hidden', hasFile);
-            manualInputLabel.classList.toggle('hidden', hasFile);
-            clearFileBtn.style.display = hasFile ? 'inline-block' : 'none';
-        });
-        clearFileBtn.addEventListener('click', () => {
-            fileInput.value = null;
-            const changeEvent = new Event('change');
-            fileInput.dispatchEvent(changeEvent);
-        });
-
-        // Savol turi o'zgarganda Test formatini yoqish/o'chirish
-        qTypeSelect.addEventListener('change', () => {
-            testFormatSelect.disabled = (qTypeSelect.value === 'faqat_nazariy');
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-             testFormatSelect.disabled = (qTypeSelect.value === 'faqat_nazariy');
-        });
-
-        // Yuklab olish (fayl nomini so'rash bilan)
-        downloadBtn.addEventListener('click', () => {
-            const textToSave = resultsDiv.innerText;
-            if (!textToSave) return;
-            let suggestedName = "savollar.txt";
-            if (fileInput.files.length > 0) {
-                 const originalFileName = fileInput.files[0].name;
-                 suggestedName = originalFileName.substring(0, originalFileName.lastIndexOf('.')) + "_savollar.txt";
-            }
-            const fileName = prompt("Fayl nomini kiriting:", suggestedName);
-            if (fileName === null || fileName.trim() === "") { return; }
-            const blob = new Blob([textToSave], { type: 'text/plain;charset=utf-8' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = fileName.endsWith('.txt') ? fileName : fileName + '.txt';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
-        });
-    </script>
+<script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </body>
 </html>
