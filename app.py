@@ -80,7 +80,12 @@ def api_generate():
         )
         
         # Modelga so'rov yuborish
-        response = model.generate_content(prompt)
+        # response = model.generate_content(prompt)
+        # 60 soniyadan ortiq osilib qolishiga yo'l qo'ymaslik
+        response = model.generate_content(
+            prompt,
+            request_options={"timeout": 60}
+         )
         
         # Natijani qaytarish
         return jsonify({"questions": response.text})
