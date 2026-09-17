@@ -80,13 +80,14 @@ def api_generate():
         )
         
         # Modelga so'rov yuborish
-        # response = model.generate_content(prompt)
+        response = model.generate_content(prompt)
         # 60 soniyadan ortiq osilib qolishiga yo'l qo'ymaslik
-        response = model.generate_content(
-            prompt,
-            request_options={"timeout": 60}
-         )
-        
+        #response = model.generate_content(
+        #    prompt,
+        #    request_options={"timeout": 60}
+        # )
+        if not response.text:
+            return jsonify({"error": "Modeldan bo'sh javob qaytdi. Xavfsizlik filtri to'xtatgan bo'lishi mumkin."}), 500
         # Natijani qaytarish
         return jsonify({"questions": response.text})
 
